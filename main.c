@@ -20,11 +20,11 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>
 #include <gtk/gtktext.h>
-#include <strings.h>
 #include <time.h>
 
 #define DEBUG(x) printf(x)
