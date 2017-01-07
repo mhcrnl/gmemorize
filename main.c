@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#define GTK_ENABLE_BROKEN
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

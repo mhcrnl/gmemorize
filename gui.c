@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#define GTK_ENABLE_BROKEN
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
