@@ -451,7 +451,7 @@ int main(int argc, char **argv)
 
 	frmEdit = create_frmEdit ();
 
-	//g_signal_connect(GTK_OBJECT(frmEdit), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(GTK_OBJECT(frmEdit), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	gtk_main();
 
