@@ -3,6 +3,7 @@
                              -------------------
     begin                : Mon Mar  6 17:54:27 EST 2000
     copyright            : (C) 2000 by Charles Leeds
+                           (C) 2017 Muhammet Kara
     email                : clever@cdc.net
  ***************************************************************************/
 
@@ -233,7 +234,7 @@ void file_ok_sel( GtkWidget *w, GtkFileSelection *fs )
 	g_string_sprintf (tempstring, "%d", theQuiz->nbQuestions);
 	gtk_label_set_text (GTK_LABEL (label_quizname), tempstring->str);
 	if (sq_description->len > 0){
-		printf("%d\n", sq_description->len);
+		printf("%lu\n", sq_description->len);
 		gtk_label_set_text (GTK_LABEL (label_sq_name), sq_description->str);
 	}
 	gtk_window_set_title (GTK_WINDOW (frmMain), quiz_filename->str);
