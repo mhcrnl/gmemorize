@@ -5,6 +5,7 @@
     copyright            : (C) 2000 by Charles Leeds
                            (C) 2017 Muhammet Kara
     email                : clever@cdc.net
+                           muhammetk@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -31,8 +32,8 @@
 #define DEBUG(x) printf(x)
 
 typedef struct record {
-	char *question;
-	char *answer;
+	unsigned char *question;
+	unsigned char *answer;
 } record, *quesPtr;
 
 typedef struct quiz {
@@ -120,19 +121,19 @@ void save_question_changes()
 	GString* tempstring = g_string_new("");
 	g_string_sprintf(tempstring, "%s", gtk_editable_get_chars( GTK_EDITABLE(textbox_edit_question), 0, -1) );
 
-	if (strcmp (tempstring->str, theQuiz->question[curQuestion]->question) ) {  // Strings don't match
+	if (strcmp (tempstring->str, (char*)(theQuiz->question[curQuestion]->question)) ) {  // Strings don't match
 		free(theQuiz->question[curQuestion]->question);
 		theQuiz->question[curQuestion]->question = malloc(tempstring->len);
-		sprintf(theQuiz->question[curQuestion]->question, tempstring->str);
+		sprintf((char*)(theQuiz->question[curQuestion]->question), tempstring->str);
 		quiz_changed = 1;  // There are unsaved changes
 	}
 
 	g_string_sprintf(tempstring, "%s", gtk_editable_get_chars( GTK_EDITABLE(textbox_edit_answer), 0, -1) );
 
-	if (strcmp (tempstring->str, theQuiz->question[curQuestion]->answer) ) {  // Strings don't match
+	if (strcmp (tempstring->str, (char*)(theQuiz->question[curQuestion]->answer)) ) {  // Strings don't match
 		free(theQuiz->question[curQuestion]->answer);
 		theQuiz->question[curQuestion]->answer = malloc(tempstring->len);
-		sprintf(theQuiz->question[curQuestion]->answer, tempstring->str);
+		sprintf((char*)(theQuiz->question[curQuestion]->answer), tempstring->str);
 		quiz_changed = 1;  // There are unsaved changes
 	}
 
@@ -160,10 +161,10 @@ void button_clicked_next(GtkWidget *widget, gpointer data)
 		if (curQuestion == theQuiz->nbQuestions)
 			curQuestion = 0;
 
-		gtk_text_insert(GTK_TEXT(textbox_edit_question), NULL, NULL, NULL, theQuiz->question[curQuestion]->question, -1);
+		gtk_text_insert(GTK_TEXT(textbox_edit_question), NULL, NULL, NULL, (char*)(theQuiz->question[curQuestion]->question), -1);
 
 		if (quiz_method == 1) { //If in edit mode
-			gtk_text_insert(GTK_TEXT(textbox_edit_answer), NULL, NULL, NULL, theQuiz->question[curQuestion]->answer, -1);
+			gtk_text_insert(GTK_TEXT(textbox_edit_answer), NULL, NULL, NULL, (char*)(theQuiz->question[curQuestion]->answer), -1);
 		}
 
 		g_string_sprintf (tempstring, "%d", curQuestion + 1);
@@ -268,12 +269,14 @@ DEBUG("parseQuestion\n");
 
 	cur = cur->children;
 	while (cur != NULL) {
-//		if ((!strcmp(cur->name, "Question")) && (cur->ns == ns))
-		if (!strcmp(cur->name, "Question"))
+		if (strcmp((char*)(cur->name), "Question") == 0)
+		{
 			ret->question = xmlNodeListGetString(doc, cur->children, 1);
-//		if ((!strcmp(cur->name, "Answer")) && (cur->ns == ns))
-		if (!strcmp(cur->name, "Answer"))
+		}
+		else if (strcmp((char*)(cur->name), "Answer") == 0)
+		{
 			ret->answer = xmlNodeListGetString(doc, cur->children, 1);
+		}
 		cur = cur->next;
 	}
 
@@ -300,7 +303,7 @@ quizPtr xml_parse_quizfile(char *filename) {
 		return(NULL);
 	}
 
-	ret = (quizPtr) malloc(sizeof(quizPtr));
+	ret = (quizPtr) malloc(sizeof(Quiz));
 
 	if (ret == NULL) {
 		fprintf(stderr,"out of memory\n");
@@ -308,16 +311,16 @@ quizPtr xml_parse_quizfile(char *filename) {
 		return(NULL);
 	}
 
-	memset(ret, 0, sizeof(quizPtr));
+	memset(ret, 0, sizeof(Quiz));
 
 	cur = cur->children;
 	while (cur != NULL) { // Parse nodes on Description / Problems level
-		if (!strcmp(cur->name, "Description")) {
-			g_string_sprintf(sq_description, xmlNodeListGetString(doc, cur->children, 1) );
-		} else if (!strcmp(cur->name, "Problems")) {
+		if (!strcmp((char*)(cur->name), "Description")) {
+			g_string_sprintf(sq_description, (char*)xmlNodeListGetString(doc, cur->children, 1) );
+		} else if (!strcmp((char*)(cur->name), "Problems")) {
    		prob = cur->children;
    		while (prob != NULL) {
-   			if (!strcmp(prob->name, "Problem")) {
+   			if (!strcmp((char*)(prob->name), "Problem")) {
    				question = xml_parse_question(doc, ns, prob);
    				if (question != NULL) {
    					ret->question[ret->nbQuestions++] = question;
@@ -359,7 +362,7 @@ void button_clicked_show_answer(GtkWidget *widget, gpointer data)
 	if (quiz_open == 1) { // If quiz is open
   	if (quiz_method == 2 || quiz_method == 3) { // If in random or sequential mode
   		gtk_text_backward_delete( GTK_TEXT(textbox_edit_answer), gtk_text_get_length(GTK_TEXT(textbox_edit_answer)) );
-  		gtk_text_insert(GTK_TEXT(textbox_edit_answer), NULL, NULL, NULL, theQuiz->question[curQuestion]->answer, -1);
+  		gtk_text_insert(GTK_TEXT(textbox_edit_answer), NULL, NULL, NULL, (char*)(theQuiz->question[curQuestion]->answer), -1);
   		gtk_widget_show(textbox_edit_answer);
   	}
 	}
@@ -376,15 +379,15 @@ void button_clicked_save(GtkWidget *widget, gpointer data)
   xmlNodePtr tree, level1, level2;
 	int i;
 
-  doc = xmlNewDoc("1.0");
+  doc = xmlNewDoc((unsigned char*)"1.0");
   //doc->root = xmlNewDocNode(doc, NULL, "quiz:Linux", NULL);
-  xmlDocSetRootElement	(doc, xmlNewDocNode(doc, NULL, "quiz:Linux", NULL));
+  xmlDocSetRootElement	(doc, xmlNewDocNode(doc, NULL, (unsigned char*)"quiz:Linux", NULL));
 
-  tree = xmlNewChild(xmlDocGetRootElement(doc), NULL, "quiz:Problems", NULL);
+  tree = xmlNewChild(xmlDocGetRootElement(doc), NULL, (unsigned char*)"quiz:Problems", NULL);
 	for (i=0 ; i < theQuiz->nbQuestions ; i++) {
-	  level1 = xmlNewChild(tree, NULL, "quiz:Problem", NULL);
-  	level2 = xmlNewChild(level1, NULL, "quiz:Question", theQuiz->question[i]->question);
-	  level2 = xmlNewChild(level1, NULL, "quiz:Answer", theQuiz->question[i]->answer);
+	  level1 = xmlNewChild(tree, NULL, (unsigned char*)"quiz:Problem", NULL);
+  	level2 = xmlNewChild(level1, NULL, (unsigned char*)"quiz:Question", theQuiz->question[i]->question);
+	  level2 = xmlNewChild(level1, NULL, (unsigned char*)"quiz:Answer", theQuiz->question[i]->answer);
 	}
 
 	xmlSaveFile( (char*) quiz_filename->str, (xmlDocPtr) doc);
