@@ -258,7 +258,7 @@ quesPtr xml_parse_question(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur) {
 DEBUG("parseQuestion\n");
 
 	ret = (quesPtr) malloc(sizeof(record));
-	printf ("%d", sizeof(record) );
+	printf ("%lu", sizeof(record) );
 	if (ret == NULL) {
 		fprintf(stderr, "out of memory\n");
 		return(NULL);
