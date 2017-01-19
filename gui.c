@@ -310,23 +310,23 @@ GtkWidget* create_frmEdit()
 
 	button_answer_1     = gtk_button_new_with_label ("   1   ");
 	gtk_box_pack_start (GTK_BOX (hbox3), button_answer_1,    TRUE, TRUE, 30);
-	gtk_widget_show (button_answer_1);	
+	gtk_widget_show (button_answer_1);
 
 	button_answer_2     = gtk_button_new_with_label ("   2   ");
 	gtk_box_pack_start (GTK_BOX (hbox3), button_answer_2,    TRUE, TRUE, 30);
-	gtk_widget_show (button_answer_2);	
+	gtk_widget_show (button_answer_2);
 
 	button_answer_3     = gtk_button_new_with_label ("   3   ");
 	gtk_box_pack_start (GTK_BOX (hbox3), button_answer_3,    TRUE, TRUE, 30);
-	gtk_widget_show (button_answer_3);	
+	gtk_widget_show (button_answer_3);
 
 	button_answer_4     = gtk_button_new_with_label ("   4   ");
 	gtk_box_pack_start (GTK_BOX (hbox3), button_answer_4,    TRUE, TRUE, 30);
-	gtk_widget_show (button_answer_4);	
+	gtk_widget_show (button_answer_4);
 
 	button_answer_5     = gtk_button_new_with_label ("   5   ");
 	gtk_box_pack_start (GTK_BOX (hbox3), button_answer_5,    TRUE, TRUE, 30);
-	gtk_widget_show (button_answer_5);	
+	gtk_widget_show (button_answer_5);
 
 	label1 = gtk_label_new ("Mode");
 	gtk_box_pack_start (GTK_BOX (vbox3), label1, TRUE, TRUE, 15);
@@ -359,7 +359,7 @@ GtkWidget* create_frmEdit()
 	label_num_of_questions = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (vbox4), label_num_of_questions, TRUE, TRUE, 15);
 	gtk_widget_show (label_num_of_questions);
-	
+
 	gtk_signal_connect(GTK_OBJECT(button_edit),
 		"clicked",
 		GTK_SIGNAL_FUNC(button_clicked_edit),
